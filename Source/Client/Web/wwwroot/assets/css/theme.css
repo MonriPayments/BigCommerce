@@ -1,0 +1,127 @@
+a.highlighted {
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+}
+a.highlighted:after {
+    content: '';
+    display: block;
+    height: 0.25rem;
+    width: 100%;
+    background-color: #F1DEFC;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    z-index: -1;
+    transition: 500ms cubic-bezier(0.51, 0.01, 0.2, 1);
+}
+a.highlighted:hover:after {
+    height: 0.75rem;
+}
+header {
+    background: linear-gradient(90deg, #BE93D3 0%, #3196D3 100%);
+    border-bottom: solid 1px #ffffff;
+}
+.login-page {
+    background: linear-gradient(90deg, #BE93D3 0%, #3196D3 100%);
+}
+.logo {
+    width: 170px;
+}
+.logo img {
+    width: 100%;
+}
+header a.highlighted,
+.onboarding-hero a.highlighted {
+    color: var(--bs-white);
+}
+header a.highlighted:after,
+.onboarding-hero a.highlighted:after {
+    background-color: #BE93D3;
+}
+.hero,
+.onboarding,
+.onboarding-form {
+    background-color: #f9fafc;
+}
+.hero .success-icon {
+    width: 6rem;
+    height: 6rem;
+    background: url("data:image/svg+xml,%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cg id='SVGRepo_bgCarrier' stroke-width='0'%3E%3C/g%3E%3Cg id='SVGRepo_tracerCarrier' stroke-linecap='round' stroke-linejoin='round'%3E%3C/g%3E%3Cg id='SVGRepo_iconCarrier'%3E%3Cpath d='M7 12L9.89075 14.8907V14.8907C9.95114 14.951 10.049 14.9511 10.1094 14.8907V14.8907L17 8' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3C/path%3E%3C/g%3E%3C/svg%3E");
+    background-size: 5rem auto;
+    background-position: center center;
+    background-color: #8132A7;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    border: solid 5px #dbc7e7;
+    box-shadow: 0 0 0 6px #ebe1f1;
+}
+.hero .error-icon {
+    width: 6rem;
+    height: 6rem;
+    background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='UTF-8'%3F%3E%3Csvg id='Layer_1' data-name='Layer 1' xmlns='http://www.w3.org/2000/svg' version='1.1' viewBox='0 0 350 285'%3E%3Cpath fill='%23ffffff' d='M75.9,0C48.6,0,26.3,22.3,26.3,49.6s22.3,49.6,49.6,49.6,49.6-22.3,49.6-49.6S103.2,0,75.9,0Z'/%3E%3Cpath fill='%23ffffff' d='M274.1,0c-27.3,0-49.6,22.3-49.6,49.6s22.3,49.6,49.6,49.6,49.6-22.3,49.6-49.6S301.4,0,274.1,0Z'/%3E%3Cpath fill='%23ffffff' d='M175,148.7c-70.9,0-136.3,37.8-171.7,99.1-6.8,11.8-2.7,27.1,9.1,33.9,11.8,6.8,27.1,2.7,33.9-9.1,26.5-46.1,75.5-74.3,128.7-74.3s102.2,28.3,128.7,74.3c6.8,11.8,22.1,15.9,33.9,9.1,11.8-6.8,15.9-22.1,9.1-33.9-35.4-61.4-100.9-99.1-171.7-99.1h0Z'/%3E%3C/svg%3E");
+    background-size: 3rem auto;
+    background-position: center center;
+    background-color: #ff5454;
+    background-repeat: no-repeat;
+    border-radius: 50%;
+    border: solid 5px #ffadad;
+    box-shadow: 0 0 0 6px #ffdcdc;
+}
+.order-card {
+    width: auto;
+    margin: -1.5rem 1rem 2rem;
+    box-shadow: 0 0 40px 0 rgba(0, 0, 0, 0.1);
+}
+.order-card.error {
+    border: dashed 2px #ffdcdc !important;
+}
+.order-card .delimiter {
+    border-style: dashed;
+}
+footer {
+    background-color: #22252c;
+}
+.text-gradient {
+    background: linear-gradient(88deg, #BE93D3 0%, #3196D3 100%);
+}
+.text-gradient-error {
+    background: linear-gradient(0deg, #ff5454 0%, #ffadad 100%);
+}
+.text-gradient,
+.text-gradient-error {
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.bg-gradient,
+.onboarding-hero {
+    background: linear-gradient(145deg, #BE93D3 0%, #3196D3 100%);
+}
+.onboarding-form form {
+    max-width: 34rem;
+}
+.required:after {
+    content: '';
+    width: 0.75rem;
+    height: 0.75rem;
+    background-image: url("data:image/svg+xml,%3C%3Fxml version='1.0' encoding='utf-8'%3F%3E%3Csvg viewBox='0 0 24 24' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M12 4V20M19 7L5 17M5 7L19 17' stroke='%23838588' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-size: 100% auto;
+}
+@media only screen and (min-width: 768px) {
+    .order-card {
+        max-width: 40rem;
+        margin: -1.5rem auto 10rem;
+    }
+    .onboarding,
+    .onboarding-panel,
+    .onboarding-panel > .row,
+    .onboarding-panel .onboarding-hero {
+        min-height: 100vh !important;
+    }
+    .onboarding-hero .logo {
+        width: 280px;
+        margin-top: 5.5rem;
+    }
+}

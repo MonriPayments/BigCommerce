@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BigCommerce + WSPay Integration — Overview</title>
+<style>
+  @page { size: A4; margin: 18mm 20mm; }
+  html, body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a;
+    font-size: 11pt;
+    line-height: 1.55;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body { margin: 0; }
+  h1 {
+    font-size: 22pt;
+    margin: 0 0 4pt;
+    color: #0b3a66;
+    letter-spacing: -0.2px;
+  }
+  .subtitle {
+    color: #5a6470;
+    font-size: 11pt;
+    margin: 0 0 22pt;
+  }
+  h2 {
+    font-size: 14pt;
+    color: #0b3a66;
+    margin: 22pt 0 6pt;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid #d6dde4;
+  }
+  h3 {
+    font-size: 12pt;
+    margin: 14pt 0 4pt;
+    color: #0b3a66;
+  }
+  p { margin: 0 0 8pt; }
+  ul, ol { margin: 0 0 10pt 18pt; padding: 0; }
+  li { margin-bottom: 4pt; }
+  strong { color: #0b3a66; }
+  .lede {
+    background: #f4f8fc;
+    border-left: 3px solid #2a73c0;
+    padding: 10pt 14pt;
+    margin: 0 0 18pt;
+    border-radius: 2px;
+  }
+  .lede p:last-child { margin-bottom: 0; }
+  .callout {
+    background: #fffbeb;
+    border-left: 3px solid #d4a017;
+    padding: 8pt 12pt;
+    margin: 12pt 0;
+    border-radius: 2px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  footer {
+    margin-top: 30pt;
+    padding-top: 8pt;
+    border-top: 1px solid #d6dde4;
+    color: #6a737d;
+    font-size: 9pt;
+  }
+</style>
+</head>
+<body>
+
+<h1>Pay-by-card for BigCommerce shops</h1>
+<p class="subtitle">A plain-language overview of the integration between BigCommerce and WSPay.</p>
+
+<div class="lede">
+<p><strong>What it is.</strong> An app that lets online shops running on BigCommerce accept credit-card payments through WSPay (a payment processor common in our region). It sits quietly between the shop and the card processor — the shop owner sets it up once, and from then on it just runs.</p>
+</div>
+
+<h2>Who it's for</h2>
+<ul>
+  <li>Online shop owners using BigCommerce who want to take card payments through WSPay.</li>
+  <li>Their customers, who want to pay by card without leaving the shop (or with a quick trip to a secure payment page).</li>
+  <li>The Monri team, who configure each shop and keep the integration healthy.</li>
+</ul>
+
+<h2>What a customer sees</h2>
+<ol>
+  <li>They fill their cart on the BigCommerce shop and get to the checkout page.</li>
+  <li>Among the payment options, one says <em>"Pay by card"</em> (the exact label is set per shop).</li>
+  <li>They pick it. One of two things happens, depending on how the shop is configured:
+    <ul>
+      <li><strong>Embedded mode</strong> — a small card-entry form opens inside the same page. They type their card, pay, and never leave the shop.</li>
+      <li><strong>Redirect mode</strong> — they click "Pay" and get sent to a WSPay-hosted page to enter their card, then bounced back to the shop's "order confirmed" screen.</li>
+    </ul>
+  </li>
+  <li>If they tick <em>"save my card"</em>, next time they shop on the same store they can pick the saved card from a dropdown and skip re-entering it.</li>
+  <li>If the payment succeeds, the BigCommerce order moves to <strong>Completed</strong>. If it fails, it goes to <strong>Cancelled</strong>. If the shop later refunds or partially refunds, that flows through too.</li>
+</ol>
+
+<h2>Who configures what</h2>
+<ul>
+  <li>A shop owner — or a Monri admin on their behalf — sets up a store record in our admin panel: which BigCommerce shop, which WSPay merchant account, embedded vs redirect mode, what label to show on checkout, where to send the customer after payment.</li>
+  <li>Once it's set up, customers never see our app. They only see the BigCommerce shop and (sometimes briefly) a WSPay payment page.</li>
+</ul>
+
+<h2>What we don't do</h2>
+<ul>
+  <li><strong>We don't take the money.</strong> WSPay handles the actual card processing and bank settlement.</li>
+  <li><strong>We don't store card numbers.</strong> When a customer saves a card, all we keep is a WSPay-issued token that means "this customer's saved card."</li>
+  <li><strong>We don't run the shop.</strong> The product catalogue, shipping, taxes, emails — all of that stays in BigCommerce. We only handle the payment step.</li>
+</ul>
+
+<h2>When something goes wrong</h2>
+<ul>
+  <li>A failed payment becomes a cancelled order in BigCommerce, automatically.</li>
+  <li>If WSPay can't reach us with the result, the order stays in its previous state until WSPay retries. We log every call so the team can debug.</li>
+  <li>Refunds and voids initiated from our admin tools flow back to BigCommerce so the shop owner's order list stays accurate.</li>
+</ul>
+
+<div class="callout">
+<p><strong>In one sentence:</strong> the customer pays on the BigCommerce shop, WSPay processes the card, and our app keeps the two sides in sync.</p>
+</div>
+
+<footer>BigCommerce + WSPay integration — non-technical overview.</footer>
+
+</body>
+</html>

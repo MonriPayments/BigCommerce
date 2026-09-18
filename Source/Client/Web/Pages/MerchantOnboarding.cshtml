@@ -1,0 +1,137 @@
+﻿@page
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model BigCommerceApi.Client.Web.Pages.MerchantOnboarding
+
+<!DOCTYPE html>
+<html class="h-100" lang="hr">
+
+<head>
+    <meta charset="utf-8">
+    <title>MerchantOnboarding</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="./site.webmanifest">
+    <link rel="mask-icon" href="./assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/theme.css">
+</head>
+
+
+<body class="onboarding h-100">
+    <main class="container-fluid onboarding-panel">
+        <div class="row">
+            <div class="col-md-6 d-flex flex-column align-items-center onboarding-hero p-3">
+                <a href="https://monri.com" target="_blank" class="logo d-inline-block mb-3 mb-md-5">
+                    <img src="assets/images/monri-logo-white.svg" alt="Monri Payments logo">
+                </a>
+                <div class="text-center text-primary"><a href="#" class="d-inline-block highlighted">Instructions</a> <span class="d-inline-block mx-2">&bull;</span> <a href="mailto:integrations@monri.com" class="d-inline-block highlighted">Contact us</a></div>
+            </div>
+            <div class="col-md-6 d-flex flex-column onboarding-form">
+                <div class="flex-shrink-0 px-3 pt-4 pt-md-5">
+                    <form class="mx-auto needs-validation mb-3" method="post" novalidate>
+                        <h1 class="h3 text-center mb-4"><strong class="text-gradient">Welcome to Merchant Onboarding!</strong></h1>
+                        <div class="mb-2">
+                            <label for="shopID" class="form-label d-block small text-uppercase mb-1 ps-1">Shop ID</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="shopID" name="ShopId" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="secretKey" class="form-label d-block small text-uppercase mb-1 ps-1">Secret Key</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="secretKey" name="SecretKey" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="clientID" class="form-label d-block small text-uppercase mb-1 ps-1">Client ID</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="clientID" name="ClientId" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="accessToken" class="form-label d-block small text-uppercase mb-1 ps-1">Access Token</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="accessToken" name="AccessToken" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="clientName" class="form-label d-block small text-uppercase mb-1 ps-1">Client Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="clientName" name="ClientName" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="clientSecret" class="form-label d-block small text-uppercase mb-1 ps-1">Client Secret</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="clientSecret" name="ClientSecret" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="name" class="form-label d-block small text-uppercase mb-1 ps-1">Name</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="name" name="Name" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-2">
+                            <label for="apiPath" class="form-label d-block small text-uppercase mb-1 ps-1">API Path</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="apiPath" name="ApiPath" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="mb-5">
+                            <label for="bigCsiteURL" class="form-label d-block small text-uppercase mb-1 ps-1">BigC Site URL</label>
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-end-0" id="bigCsiteURL" name="MerchantSiteUrl" required>
+                                <span class="input-group-text bg-white border-start-0 text-danger required"></span>
+                                <div class="invalid-feedback ps-1 small">This field is required!</div>
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-lg btn-primary" asp-page-handler="Submit">Submit data</button>
+                        </div>
+                    </form>
+                </div>
+                <div class="mt-auto text-center text-muted p-3">&copy; Monri Payments d.o.o.</div>
+            </div>
+        </div>
+    </main>
+    <script>
+        (() => {
+            'use strict'
+            const forms = document.querySelectorAll('.needs-validation')
+            Array.from(forms).forEach(form => {
+                form.addEventListener('submit', event => {
+                    if (!form.checkValidity()) {
+                        event.preventDefault()
+                        event.stopPropagation()
+                    }
+                    form.classList.add('was-validated')
+                }, false)
+            })
+        })()
+    </script>
+</body>
+
+</html>

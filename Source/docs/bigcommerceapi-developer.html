@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>BigCommerce + WSPay Integration — Developer Guide</title>
+<style>
+  @page { size: A4; margin: 18mm 20mm; }
+  html, body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: #1a1a1a;
+    font-size: 10pt;
+    line-height: 1.5;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  body { margin: 0; }
+  h1 {
+    font-size: 21pt;
+    margin: 0 0 4pt;
+    color: #0b3a66;
+    letter-spacing: -0.2px;
+  }
+  .subtitle {
+    color: #5a6470;
+    font-size: 10.5pt;
+    margin: 0 0 18pt;
+  }
+  h2 {
+    font-size: 13.5pt;
+    color: #0b3a66;
+    margin: 20pt 0 5pt;
+    padding-bottom: 3pt;
+    border-bottom: 1px solid #d6dde4;
+    page-break-after: avoid;
+  }
+  h3 {
+    font-size: 11.5pt;
+    margin: 13pt 0 3pt;
+    color: #0b3a66;
+    page-break-after: avoid;
+  }
+  p { margin: 0 0 7pt; }
+  ul, ol { margin: 0 0 9pt 18pt; padding: 0; }
+  li { margin-bottom: 3pt; }
+  strong { color: #0b3a66; }
+  code, .mono {
+    font-family: "Cascadia Mono", "Consolas", "Courier New", monospace;
+    background: #f1f4f7;
+    padding: 1px 4px;
+    border-radius: 3px;
+    font-size: 9pt;
+    color: #234;
+  }
+  pre {
+    font-family: "Cascadia Mono", "Consolas", "Courier New", monospace;
+    background: #f6f8fa;
+    border-left: 3px solid #2a73c0;
+    padding: 8pt 10pt;
+    border-radius: 2px;
+    font-size: 9pt;
+    line-height: 1.4;
+    overflow: hidden;
+    white-space: pre-wrap;
+    margin: 6pt 0 10pt;
+  }
+  .lede {
+    background: #f4f8fc;
+    border-left: 3px solid #2a73c0;
+    padding: 9pt 13pt;
+    margin: 0 0 16pt;
+    border-radius: 2px;
+  }
+  .lede p:last-child { margin-bottom: 0; }
+  .callout {
+    background: #fffbeb;
+    border-left: 3px solid #d4a017;
+    padding: 7pt 11pt;
+    margin: 10pt 0;
+    border-radius: 2px;
+  }
+  .callout p:last-child { margin-bottom: 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 6pt 0 12pt;
+    font-size: 9.5pt;
+  }
+  th, td {
+    text-align: left;
+    border-bottom: 1px solid #e1e6eb;
+    padding: 5pt 7pt;
+    vertical-align: top;
+  }
+  th {
+    background: #f4f8fc;
+    color: #0b3a66;
+    font-weight: 600;
+    border-bottom: 1.5px solid #c9d3dc;
+  }
+  footer {
+    margin-top: 26pt;
+    padding-top: 7pt;
+    border-top: 1px solid #d6dde4;
+    color: #6a737d;
+    font-size: 8.5pt;
+  }
+  .keep { page-break-inside: avoid; }
+</style>
+</head>
+<body>
+
+<h1>BigCommerce + WSPay integration</h1>
+<p class="subtitle">Developer guide — architecture, flow, and codebase orientation.</p>
+
+<div class="lede">
+<p>ASP.NET Core service that integrates BigCommerce storefronts with WSPay as the payment processor. Runs as a side service that BigCommerce checkouts call into (via injected JS) and that WSPay calls back into. Not a public API and not consumer-facing — its only HTTP clients are the BigCommerce checkout page, WSPay, and an internal admin UI.</p>
+</div>
+
+<h2>Stack</h2>
+<ul>
+  <li><strong>ASP.NET Core</strong> (<code>Client.Web</code>), recently moved to .NET 10</li>
+  <li><strong>NHibernate</strong> via FluentNHibernate (<code>Persistency.NHibernate</code>)</li>
+  <li><strong>FluentMigrator</strong> for schema migrations (<code>Persistency.Migrations</code>)</li>
+  <li><strong>Autofac</strong> for DI — modules: <code>Domain.Services.Module</code>, <code>Client.Web.Module</code>, <code>Persistency.NHibernate.Module</code></li>
+  <li><strong>WebStudio</strong> internal framework — <code>IQueryExecutor</code>, <code>ICommandExecutor</code>, <code>UnitOfWork</code>, <code>Response&lt;T&gt;</code>, command/query handler pattern (NOT MediatR)</li>
+  <li><strong>RestSharp</strong> for outbound HTTP (BigC REST Management API, WSPay form API)</li>
+  <li><strong>JWT</strong> bearer auth for admin endpoints</li>
+  <li><strong>SQL Server</strong> backend</li>
+  <li><strong>Vanilla JS</strong> front-end glue injected into the BigC checkout DOM (<code>wwwroot/monri_custom_checkout.js</code>)</li>
+</ul>
+
+<h2>Project layout</h2>
+<ul>
+  <li><code>Domain/Model/</code> — entities (Stores, Shops, Transactions, Users, Administrators)</li>
+  <li><code>Domain/Services/</code> — command/query handlers, business logic, external API clients
+    <ul>
+      <li><code>Callback/</code> — <code>SaveCallback</code>, <code>OrderStatusUpdate</code>, <code>SaveTransaction</code></li>
+      <li><code>Checkout/</code> — <code>InitiateCheckout</code>, <code>GetIFrameValues</code></li>
+      <li><code>WSPayForm/</code> — outbound WSPay form-API client (<code>IFormWSPay</code>)</li>
+      <li><code>WSPay/</code> — WSPay backoffice ops (void/refund), <code>WSPaySignatureGenerator</code></li>
+      <li><code>RestManagementApi/</code> — BigCommerce REST client</li>
+      <li><code>Helpers/</code> — <code>WsPayFormHelper</code>, <code>TransactionsHelpers</code>, <code>ResponseHelper</code>, <code>ErrorMessages</code>, <code>CacheStore</code></li>
+    </ul>
+  </li>
+  <li><code>Domain/Projections/</code> — read-side query DTOs</li>
+  <li><code>Persistency/NHibernate/</code> — mappings + query handlers</li>
+  <li><code>Persistency/Migrations/</code> — FluentMigrator migrations</li>
+  <li><code>Client/Web/</code> — controllers, request/response DTOs, <code>Program.cs</code>, <code>appsettings.json</code>, <code>wwwroot/monri_custom_checkout.js</code></li>
+</ul>
+
+<h2>Key entities</h2>
+<ul>
+  <li><strong><code>StoreConfiguration</code></strong> — one per BigCommerce store. Holds <code>AccessToken</code>, <code>ApiPath</code>, <code>MerchantSiteUrl</code>, <code>StoreStatus</code> (Test/Production), <code>CheckoutType</code> (EmbeddedCheckout/Redirect), <code>PaymentMethodName</code>, <code>OrderConfirmationRedirectRoute</code>, <code>DefaultOrderStatus</code>.</li>
+  <li><strong><code>Shops</code></strong> — N rows per <code>StoreConfiguration</code>, each holding WSPay credentials (<code>ShopID</code>, <code>SecretKey</code>, <code>Language</code>, <code>IsTokenShopId</code>). <code>IsTokenShopId</code> is a WSPay quirk: WSPay represents "this merchant account is used for tokenized payments" as a separate shop record. Don't read it as "this row stores a token" — it means "this row is the tokenization-enabled WSPay shop."</li>
+  <li><strong><code>Transaction</code></strong> — created/updated on every WSPay callback. Keyed by <code>(ShoppingCartID, ShopID)</code>. Holds <code>WsPayOrderId</code>, <code>Amount</code>, status flags, customer fields.</li>
+  <li><strong><code>User</code> + <code>UserTokens</code></strong> — saved-card records, keyed by <code>(customer email, StoreConfiguration)</code>.</li>
+</ul>
+
+<h2>Configuration</h2>
+<p><code>appsettings.json</code> holds infrastructure-level config:</p>
+<ul>
+  <li><code>DatabaseConfiguration</code> — SQL connection</li>
+  <li><code>MSSQLServerLoggerConfiguration</code> — log table sink</li>
+  <li><code>FormWSPayConfiguration</code> — WSPay form API base URLs + timeouts</li>
+  <li><code>WSPayPaymentGatewayConfiguration</code> — WSPay backoffice URLs + basic auth</li>
+  <li><code>BigCommerceConfiguration</code> — OAuth client id/secret + <code>AppUri</code> (the public hostname of <em>this</em> service)</li>
+  <li><code>JwtSettings</code> — admin auth</li>
+</ul>
+<p>Per-store data lives in DB (<code>StoreConfiguration</code> + <code>Shops</code>).</p>
+
+<h2>Checkout flow</h2>
+<p>The customer reaches the BigC checkout. BigC serves the page; in it is <code>monri_custom_checkout.js</code>, served from this app's <code>wwwroot</code>.</p>
+<ol>
+  <li>JS calls <code>POST /checkout/check-merchant-integration</code> with <code>{ SiteUrl }</code> → returns <code>"EmbeddedCheckout"</code> or <code>"Redirect"</code> (defaults to <code>EmbeddedCheckout</code> if no store match).</li>
+  <li>JS calls <code>POST /checkout/fetch-payment-method-name</code> → label for the radio button (default: "Plaćanje karticama").</li>
+  <li>JS uses a <code>MutationObserver</code> to inject a payment-option radio + container into the BigC checkout DOM.</li>
+  <li>When the customer picks "Monri", the flow branches on integration type.</li>
+</ol>
+
+<h3>Embedded flow</h3>
+<ul>
+  <li>JS calls <code>POST /checkout/get-iframe-values</code> with <code>{ CheckoutID, SiteUrl }</code>.</li>
+  <li><code>GetIframeValuesHandler</code> looks up the store, fetches BigC checkout (<code>/checkouts/{id}</code>) + create-order response, then loops the store's <code>Shops</code> rows and produces one <code>GetIFrameValuesResult</code> per shop — each with WSPay form URL, signature, customer/order fields, <code>IsTokenShopID</code> flag.</li>
+  <li>JS separates token vs non-token results, builds a hidden form per result, submits into <code>wspay-iframe</code>. WSPay renders its card form inside the iframe. Saved-card dropdown lets the user pick from <code>UserTokens</code> for that customer email.</li>
+</ul>
+
+<h3>Redirect flow</h3>
+<ul>
+  <li>JS calls <code>POST /checkout/init</code> with <code>{ CheckoutID, SiteUrl }</code>.</li>
+  <li><code>InitiateCheckoutHandler</code> does the BigC lookup + create-order with retry (up to 15 × 2s for the create-order response), then calls <code>IFormWSPay.CreateFormTransactionAsync</code> against the WSPay form API. Returns <code>PaymentFormUrl</code>.</li>
+  <li>Handler caches <code>{ ShopID, Currency, SiteUrl }</code> keyed by BigC order id (<code>IWebAppCache</code> / <code>IMemoryCache</code>, 30-min default TTL).</li>
+  <li>JS attaches the URL to a "Pay" button. Click navigates the browser to WSPay.</li>
+</ul>
+
+<h2>Callback flow</h2>
+<p>After payment, WSPay calls back to:</p>
+<ol>
+  <li><code>POST /callback/savetransaction</code> → <code>SaveCallbackHandler</code>:
+    <ul>
+      <li>Upsert <code>Transaction</code> keyed by <code>(ShoppingCartID, ShopID)</code>.</li>
+      <li>If <code>(CustomerEmail, Token)</code> present, upsert <code>User</code> + <code>UserTokens</code> for the saved-card flow.</li>
+      <li>Compute status via <code>TransactionsHelpers.CheckForStatusChangeAction</code> → <code>WSPayTransactionStatus</code> (Completed / Voided / Refunded / PartiallyRefunded).</li>
+      <li>Call BigC's order-update endpoint. Payment method label is hardcoded <code>"WSPay by Monri"</code>.</li>
+    </ul>
+  </li>
+  <li><code>POST /callback/orderstatusupdate</code> → <code>OrderStatusUpdateHandler</code>:
+    <ul>
+      <li>Used for void/refund flows initiated from our backoffice. Talks to WSPay's backoffice API.</li>
+    </ul>
+  </li>
+</ol>
+
+<h2>Post-payment redirect</h2>
+<p>After payment, WSPay redirects the customer to <code>{AppUri}/redirect/order-confirmation</code>. <code>RedirectController</code> looks up the cached <code>{ ShopID, Currency, SiteUrl }</code> by order id and bounces the customer back to the configured <code>OrderConfirmationRedirectRoute</code> on the BigC store.</p>
+
+<h2>Admin surface</h2>
+<p><code>AdministratorController</code> at <code>/administrator</code>, JWT-protected after <code>/login</code>:</p>
+<ul>
+  <li>CRUD on <code>StoreConfiguration</code> and <code>Shops</code></li>
+  <li>Read-side queries: <code>GetStoreConfigurationsHandler</code>, <code>GetShopsHandler</code>, <code>GetMerchantOptionsHandler</code></li>
+  <li>Log search: <code>GetLogsHandler</code></li>
+</ul>
+<p>No SPA in this repo — the admin UI lives elsewhere and talks to these endpoints.</p>
+
+<h2>Caching</h2>
+<p><code>WebAppCache</code> wraps <code>IMemoryCache</code>. Holds short-lived per-order context (<code>ShopID</code>, <code>Currency</code>, <code>SiteUrl</code>). 30-min TTL by default. Used by the post-payment redirect and <code>UpdateOrderHandler</code>.</p>
+
+<h2>Logging</h2>
+<p>Structured logs go to a SQL Server <code>Log</code> table via <code>MSSQLServerLoggerConfiguration</code>. Every external call logs request/response/error keyed by a request id. Event categories live in <code>Domain.Services.Logging.Events</code>.</p>
+
+<h2>Deployment</h2>
+<p>Single-host ASP.NET Core app. Static <code>wwwroot</code> serves the JS shipped to BigC. The app's public hostname (<code>AppUri</code>) is both what gets injected into BigC pages and what WSPay calls back to. Default <code>appsettings.json</code> points at <code>monribigcomm.wspay.info</code>.</p>
+
+<h2>Hot spots / WSPay coupling to be aware of</h2>
+<div class="callout">
+<p>The codebase is WSPay-coupled throughout. The places listed below are the ones you'll touch first if you ever want to support a second gateway.</p>
+</div>
+<ul>
+  <li><code>WsPayFormHelper.CreateIframeRequest</code> builds the WSPay-shaped iframe payload and hardcodes the form URLs (<code>formtest.wspay.biz/authorization.aspx</code> for test, <code>form.wspay.biz/authorization.aspx</code> for prod).</li>
+  <li><code>WsPayFormHelper.CreateIframeRequest:78</code> has a hardcoded per-merchant override: <code>shop?.ShopID == "SKOLSKA" ? "self" : "TOP"</code> for the iframe response target.</li>
+  <li><code>SaveCallbackHandler</code> hardcodes the payment method label <code>"WSPay by Monri"</code> when updating BigC orders.</li>
+  <li><code>InitiateCheckoutHandler</code> picks the WSPay form URL from <code>FormWSPayConfiguration.BaseUrlProd</code> / <code>BaseUrlTest</code> based on <code>StoreStatus</code>.</li>
+  <li><code>ProcessingTransactionCallbackRequest</code> + <code>SaveCallbackCommand</code> are WSPay-shaped DTOs (<code>WsPayOrderId</code>, <code>STAN</code>, <code>ApprovalCode</code>, <code>Signature</code>, <code>ECI</code>, etc).</li>
+  <li><code>monri_custom_checkout.js</code> is WSPay-coupled throughout — element IDs <code>wspay-iframe</code>, <code>wspayiframeshopID</code>, <code>wspayiframesignature</code>, etc. The file mixes the embedded and redirect branches based on the response of <code>check-merchant-integration</code>.</li>
+  <li><code>Shops.IsTokenShopId</code> semantics: WSPay-specific. See entity note above.</li>
+</ul>
+
+<h2>Things this doc intentionally doesn't cover</h2>
+<ul>
+  <li>The admin UI's UX (lives in a different repo).</li>
+  <li>WSPay onboarding (merchant agreement, API credentialing).</li>
+  <li>BigCommerce app install / OAuth handshake (handled by <code>AuthController</code>, but a separate concern from runtime checkout).</li>
+</ul>
+
+<footer>BigCommerce + WSPay integration — developer guide.</footer>
+
+</body>
+</html>

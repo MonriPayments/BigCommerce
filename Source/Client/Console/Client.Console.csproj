@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>Framework.Training.Client.Console</AssemblyName>
+    <RootNamespace>Framework.Training.Client.Console</RootNamespace>
+  </PropertyGroup>
+
+</Project>

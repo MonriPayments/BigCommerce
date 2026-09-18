@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <AssemblyName>BigCommerceApi.Persistency.Migrations</AssemblyName>
+    <RootNamespace>BigCommerceApi.Persistency.Migrations</RootNamespace>
+    <Configurations>Debug;Release;Dev;Test</Configurations>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentMigrator" Version="3.3.2" />
+	<None Remove="Scripts\M202408081016_CreateTransactions_GetTransactionsByDates.sql" />
+	<None Remove="Scripts\M202409001816_CreateFunction_ParameterListToTable.sql" />
+	<None Remove="Scripts\M202409001858_AlterSP_Transactions_GetTransactionsByDates.sql" />
+  </ItemGroup>
+
+  <ItemGroup>
+	<EmbeddedResource Include="Scripts\M202408081016_CreateTransactions_GetTransactionsByDates.sql" />
+	<EmbeddedResource Include="Scripts\M202409001816_CreateFunction_ParameterListToTable.sql" />
+	<EmbeddedResource Include="Scripts\M202409001858_AlterSP_Transactions_GetTransactionsByDates.sql" />
+  </ItemGroup>
+
+</Project>

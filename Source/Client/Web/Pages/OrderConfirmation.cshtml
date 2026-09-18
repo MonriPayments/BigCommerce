@@ -1,0 +1,139 @@
+﻿@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@model BigCommerceApi.Client.Web.Pages.OrderConfirmationModel
+@inject IViewLocalizer Localizer
+
+<!DOCTYPE html>
+<html class="h-100" lang="hr">
+
+<head>
+    <meta charset="utf-8">
+    <title>@Localizer["ThankYou"]! - Monri WebPay</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="Thank you! An email will be sent containing information about your purchase.">
+    <link rel="apple-touch-icon" sizes="180x180" href="./assets/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./assets/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="./assets/icons/android-chrome-192x192.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./assets/icons/favicon-16x16.png">
+    <link rel="manifest" href="./site.webmanifest">
+    <link rel="mask-icon" href="./assets/icons/safari-pinned-tab.svg" color="#5bbad5">
+    <link rel="shortcut icon" href="./assets/icons/favicon.ico">
+    <link href="https://api.fontshare.com/v2/css?f[]=satoshi@700,500,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="./assets/css/theme.css">
+</head>
+
+<body class="d-flex flex-column h-100">
+    <main class="flex-shrink-0">
+        <header class="py-3">
+            <div class="container d-flex flex-column flex-md-row align-items-center justify-content-between">
+                <a href="https://monri.com" target="_blank" class="logo d-inline-block mb-3 mb-md-3">
+                    <img src="./assets/images/monri-logo-white.svg" alt="Monri Payments logo">
+                </a>
+                <a href="mailto:wspay@wspay.info" class="d-inline-block highlighted">@Localizer["ContactUs"]</a>
+            </div>
+        </header>
+        <section class="hero pt-4 pb-5">
+            <div class="container text-center">
+                <i class="success-icon d-inline-block mb-2"></i>
+                <h1 class="mb-3"><strong>@Localizer["ThankYou"], @Model.CustomerFirstName!</strong></h1>
+                <p class="mb-4"><span class="bg-white border border-primary rounded d-inline-block text-xl px-4 py-1"><strong class="text-gradient">@Localizer["YourOrderNumberIs"] @Model.ShoppingCartId</strong></span></p>
+                <p class="lead mx-auto my-0">@Localizer["AnEmailWillBeSent"] @Localizer["IfYouHaveAnyQuestions"] <a href="mailto:wspay@wspay.info" class="highlighted">wspay@wspay.info</a></p>
+            </div>
+        </section>
+        <div class="card order-card border-0">
+            <div class="card-body py-4">
+                <h2 class="card-title h4 text-uppercase text-center mb-4"><strong class="text-gradient">@Localizer["OrderConfirm"]</strong></h2>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="m-0 mb-md-3">@Localizer["Customer"]</p>
+                        </div>
+                        <div class="col-md-8 text-md-end">
+                            <p><strong>@Model.CustomerFirstName @Model.CustomerLastName</strong></p>
+                        </div>
+                    </div>
+                    <hr class="delimiter mt-0 mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="m-0 mb-md-3">@Localizer["Address"]</p>
+                        </div>
+                        <div class="col-md-8 text-md-end">
+                            <p><strong>@Model.CustomerAddress, @Model.CustomerZIP @Model.CustomerCity, @Model.CustomerCountry</strong></p>
+                        </div>
+                    </div>
+                    <hr class="delimiter mt-0 mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="m-0 mb-md-3">@Localizer["Phone"]</p>
+                        </div>
+                        <div class="col-md-8 text-md-end">
+                            <p><strong>@Model.CustomerPhone</strong></p>
+                        </div>
+                    </div>
+                    <hr class="delimiter mt-0 mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="m-0 mb-md-3">@Localizer["Email"]</p>
+                        </div>
+                        <div class="col-md-8 text-md-end">
+                            <p><strong>@Model.CustomerEmail</strong></p>
+                        </div>
+                    </div>
+                    <hr class="delimiter mt-0 mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="m-0 mb-md-3">@Localizer["ShoppingCartID"]</p>
+                        </div>
+                        <div class="col-md-8 text-md-end">
+                            <p><strong>@Model.ShoppingCartId</strong></p>
+                        </div>
+                    </div>
+                    <hr class="delimiter mt-0 mb-3">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <p class="m-0 mb-md-3">@Localizer["OrderTotal"] (@Model.CurrencyCode)</p>
+                        </div>
+                        <div class="col-md-8 text-md-end">
+                            <p><strong>@Model.CurrencyCode @Model.Amount</strong></p>
+                        </div>
+                    </div>
+                </div>
+                @if (Model.ShowMerchantInfo) {
+                    <div class="container">
+                        <h2 class="card-title h4 text-uppercase text-center mb-4"><strong class="text-gradient">@Localizer["MerchantInfo"]</strong></h2>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="m-0 mb-md-3">@Localizer["MerchantName"]</p>
+                            </div>
+                            <div class="col-md-8 text-md-end">
+                                <p><strong>@Model.MerchantName</strong></p>
+                            </div>
+                        </div>
+                        <hr class="delimiter mt-0 mb-3">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="m-0 mb-md-3">@Localizer["MerchantEmail"]</p>
+                            </div>
+                            <div class="col-md-8 text-md-end">
+                                <p><strong>@Model.MerchantEmail</strong></p>
+                            </div>
+                        </div>
+                    </div>
+                }
+                         
+                <div class="text-center mt-3">
+                    <a href=@Model.MerchantSiteUrl class="btn btn-lg btn-primary">@Localizer["ContinueShopping"]</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <footer class="footer mt-auto py-3">
+        <div class="container text-center">
+            <span class="text-muted">&copy; Monri Payments d.o.o.</span>
+        </div>
+    </footer>
+</body>
+
+</html>

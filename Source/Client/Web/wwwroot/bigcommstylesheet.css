@@ -1,0 +1,132 @@
+﻿@keyframes monri-spin {
+    from {
+        transform: translateY(-50%) rotate(0deg);
+    }
+
+    to {
+        transform: translateY(-50%) rotate(360deg);
+    }
+}
+
+.no-border {
+    border: none;
+}
+
+.no-display {
+    display: none;
+}
+
+h5,
+p {
+    font-family: "Lato";
+    font-size: 14px;
+}
+
+#content {
+    background-color: var(--colorBackground);
+}
+
+.input {
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: var(--gutter);
+    background-color: white;
+}
+
+.input__active {
+    border-color: var(--colorAccent);
+    border-bottom-left-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
+}
+
+.input__placeholder {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px 5px 5px 20px;
+    min-height: 60px;
+}
+
+.input:hover {
+    cursor: pointer;
+}
+
+.placeholder {
+    color: var(--colorPlaceholder);
+}
+
+.input__selected {
+    color: var(--colorPrimaryDark);
+}
+
+/* Dropdown styling */
+.structure {
+    width: 100%;
+    min-height: 25vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: white;
+    box-shadow: 0 5px 10px 0 rgba(0, 0, 0, 0.1);
+    padding: 10px 0;
+}
+
+    .structure > div {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        padding: 16px;
+        justify-content: space-between;
+    }
+
+        .structure > div:hover {
+            background-color: #dddddd;
+        }
+
+        .structure > div > span {
+            font-weight: 600;
+        }
+
+        .structure > div > img {
+            margin-left: 1rem;
+            display: inline-block;
+            width: 50px;
+        }
+
+.hide {
+    display: none;
+}
+
+input[type="checkbox"] {
+    display: none;
+}
+
+    input[type="checkbox"] + label {
+        position: relative;
+        padding-left: 25px;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+        input[type="checkbox"] + label::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 18px;
+            height: 18px;
+            border: 2px solid #ddd;
+            background-color: white;
+        }
+
+    input[type="checkbox"]:checked + label::after {
+        content: '';
+        position: absolute;
+        left: 6px;
+        top: 2px;
+        width: 6px;
+        height: 12px;
+        border: solid #555;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
